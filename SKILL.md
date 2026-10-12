@@ -15,8 +15,8 @@ agent_created: true
 **索引**：`$HTC/references/INDEX.md` —— 每行 `菜名|难度|卡路里|主要食材|正文路径`，专供 grep。五十多 KB，**别整篇读，用 grep**。
 
 ```bash
-# 自动定位技能目录（不同机器安装位置可能不同，不要写死路径）
-HTC="$(dirname "$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.workbuddy" -maxdepth 3 -type d -name how-to-cook 2>/dev/null | head -1)")"
+# 自动定位技能目录（不同机器、不同 Agent 安装位置可能不同，不要写死路径）
+HTC="$(dirname "$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.workbuddy" -maxdepth 3 -type d -name how-to-cook 2>/dev/null | head -1)")"
 IDX="$HTC/references/INDEX.md"
 ```
 

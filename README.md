@@ -8,9 +8,22 @@
 
 ## 安装
 
-1. 下载本仓库为 zip，或在 WorkBuddy 技能页「添加技能」导入
-2. 解压到 `~/.workbuddy/skills/how-to-cook/`（CodeBuddy 为 `~/.codebuddy/skills/`）
-3. 直接问：「西红柿炒鸡蛋 2 人份怎么做」「冰箱里只剩土豆和豆腐能做什么」
+**任何能读写文件、跑 shell 命令的 Agent 都能用**——SKILL.md 是跨平台通用格式，把本仓库放进对应 Agent 的技能目录即可：
+
+| Agent / 工具 | 技能目录 |
+|---|---|
+| WorkBuddy | `~/.workbuddy/skills/how-to-cook/`（或在技能页「添加技能」导入 zip） |
+| CodeBuddy | `~/.codebuddy/skills/how-to-cook/` |
+| Claude Code | `~/.claude/skills/how-to-cook/` |
+| Cursor | `~/.cursor/skills/how-to-cook/` |
+| 其他支持 SKILL.md 的 Agent | 放到它扫描技能的目录下，保持 `SKILL.md` 在 `how-to-cook/` 根层 |
+
+```bash
+git clone https://github.com/weivslong/how-to-cook.git ~/.claude/skills/how-to-cook   # 以 Claude Code 为例
+```
+
+- **运行要求**：Agent 须能执行 bash + grep（检索和自举都靠它）；首次使用若正文缺失会自动从上游拉取（需 git + 网络），之后完全离线
+- **验证**：装完问一句「西红柿炒鸡蛋 2 人份怎么做」——能答出精确克数就是装好了
 
 ## 结构
 
