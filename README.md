@@ -1,6 +1,6 @@
 # how-to-cook · 做饭查证技能
 
-一个 WorkBuddy / CodeBuddy 技能：把《程序员做饭指南》(HowToCook) 变成可查证的菜谱库。
+一个 AI Agent 技能（SKILL.md 通用格式，WorkBuddy / CodeBuddy / Claude Code / Cursor / DeepSeek Harness 等均可安装）：把《程序员做饭指南》(HowToCook) 变成可查证的菜谱库。
 
 - **373 道菜 + 18 篇基本功**，全部用量精确到克/毫升，按人数自动换算
 - 回答时先查本地菜谱库，**禁止凭记忆编数字、禁止用"少许/适量"顶替原方**
