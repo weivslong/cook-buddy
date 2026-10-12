@@ -1,6 +1,11 @@
 ---
 name: how-to-cook
+version: 1.1.0
+author: weivslong
 description: 做饭查证与用量换算。当用户要做菜、问某道菜怎么做、该放多少盐/油/水、几个人吃该做几份、冰箱里只剩某几样食材能做什么、这道菜多少热量、或者问焯水/腌肉/蒸煮/油温/微波炉/空气炸锅/高压锅怎么用时，先到本地的《程序员做饭指南》(Anduin2017/HowToCook) 正文里把菜谱查出来，按人数把用量算好再答；严禁凭记忆编数字、严禁用"少许/适量"顶替原方。触发词：做菜、做饭、菜谱、怎么做、今天吃什么、几个人、几人份、放多少、多少克、火候、几成熟、焯水、腌肉、去腥、蒸、煮、凉拌、微波炉、空气炸锅、高压锅、低卡、简单点、快手菜、剩了点什么能做什么、食材搭配。
+description_zh: 把《程序员做饭指南》变成可查证的菜谱库——先查本地菜谱正文，按人数把用量换算好再答；忌口过敏硬过滤，严禁编数字、严禁用「少许/适量」顶替原方。
+description_en: Verified cooking skill based on HowToCook — looks up recipes from a local 373-dish library, scales quantities by serving count, filters allergies and dietary bans, and never invents numbers or replaces exact amounts with vague words.
+allowed-tools: ["scripts/bash", "scripts/python"]
 agent_created: true
 ---
 
