@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """扫描 references/HowToCook/ 下的菜谱 Markdown，生成 references/INDEX.md。
 
-索引每行格式：菜名|难度|卡路里|主要食材|正文路径
+索引每行格式：菜名|分类|难度|卡路里|主要食材|正文路径
 用法：grep 这个文件定位菜，再去读正文。不要整篇读。
 刷新上游正文后需要重跑本脚本。
 """
@@ -79,7 +79,9 @@ def parse_recipe(path: str):
                 items.append(ing)
     ingredients = "/".join(items[:8])
 
-    return name, difficulty, cal, ingredients
+    return name, CATEGORY_LABEL.get(os.path.basename(os.path.dirname(path)),
+                                    os.path.basename(os.path.dirname(path))), \
+        difficulty, cal, ingredients
 
 
 def main() -> int:
@@ -96,8 +98,8 @@ def main() -> int:
             rel = os.path.relpath(full, REPO)
             if rel.startswith("dishes/template/"):
                 continue
-            name, diff, cal, ing = parse_recipe(full)
-            recipes.append((rel, name, diff, cal, ing))
+            name, cat, diff, cal, ing = parse_recipe(full)
+            recipes.append((rel, name, cat, diff, cal, ing))
 
     tips = []
     tips_root = os.path.join(REPO, "tips")
@@ -113,10 +115,10 @@ def main() -> int:
 
     # 按分类归组
     groups = {}
-    for rel, name, diff, cal, ing in recipes:
+    for rel, name, cat, diff, cal, ing in recipes:
         parts = rel.split(os.sep)
-        cat = parts[1] if len(parts) > 2 else "(未分类)"
-        groups.setdefault(cat, []).append((name, diff, cal, ing, rel.replace(os.sep, "/")))
+        cat_key = parts[1] if len(parts) > 2 else "(未分类)"
+        groups.setdefault(cat_key, []).append((name, cat, diff, cal, ing, rel.replace(os.sep, "/")))
 
     order = ["vegetable_dish", "meat_dish", "aquatic", "breakfast", "staple",
              "soup", "dessert", "drink", "condiment", "semi-finished", "semi_finished"]
@@ -126,8 +128,9 @@ def main() -> int:
     L.append("<!-- 本文件由 scripts/build_index.py 自动生成，请勿手改。 -->")
     L.append("# 菜谱索引（自动生成）")
     L.append("")
-    L.append("每行格式：`菜名|难度|卡路里|主要食材|正文路径`")
+    L.append("每行格式：`菜名|分类|难度|卡路里|主要食材|正文路径`")
     L.append("")
+    L.append("- **分类**：素菜/荤菜/水产/早餐/主食/汤羹/甜品/饮料/调料/半成品，grep 时写 `|分类|`（前后带竖线防误命中）。")
     L.append("- **难度**：1–5，★ 的个数。1 星最简单（约 5 分钟），5 星最难。")
     L.append("- **卡路里**：上游给的预估总量，单位大卡；空白表示原作者未填。")
     L.append("- **主要食材**：取自正文「必备原料和工具」，已滤掉锅碗油盐这类厨房常备。")
@@ -152,13 +155,13 @@ def main() -> int:
     L.append("## 菜谱明细")
     L.append("")
     for c in cats:
-        rows = sorted(groups[c], key=lambda x: (x[1], x[0]))
+        rows = sorted(groups[c], key=lambda x: (x[2], x[0]))
         L.append("### %s · `dishes/%s/`（%d 道）" % (
             CATEGORY_LABEL.get(c, c), c, len(rows)))
         L.append("")
         L.append("```")
-        for name, diff, cal, ing, rel in rows:
-            L.append("%s|%s|%s|%s|%s" % (name, diff or "-", cal or "-", ing, rel))
+        for name, cat, diff, cal, ing, rel in rows:
+            L.append("%s|%s|%s|%s|%s|%s" % (name, cat, diff or "-", cal or "-", ing, rel))
         L.append("```")
         L.append("")
 
