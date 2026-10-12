@@ -2,14 +2,14 @@
 
 [![License](https://img.shields.io/badge/license-Unlicense-blue)](./LICENSE)
 [![Upstream](https://img.shields.io/badge/基于-HowToCook_77k★-orange)](https://github.com/Anduin2017/HowToCook)
-[![菜谱](https://img.shields.io/badge/菜谱-373道-green)](#能力总览)
+[![菜谱](https://img.shields.io/badge/菜谱-372道-green)](#能力总览)
 [![格式](https://img.shields.io/badge/格式-SKILL.md_通用标准-8A2BE2)](https://agentskills.io)
 
 把《程序员做饭指南》变成给 AI 用的**可查证菜谱库**。
 
 上游解决的是「盐少许、油适量」没法照着做——这个技能解决的是另一件事：**你问 AI 做饭，它最爱编**。「盐适量」「炒到断生」「大约 10 分钟」……看着像回事，全是它现场编的。装上这个技能，AI 必须先翻菜谱库，数字照抄原方，查不到就说查不到。
 
-**373 道菜 + 18 篇基本功，全部精确到克/毫升，报人数直接算好总量。**
+**372 道菜（同名重复已去重）+ 18 篇基本功，全部精确到克/毫升，报人数直接算好总量。**
 
 ---
 
