@@ -16,10 +16,14 @@
 | CodeBuddy | `~/.codebuddy/skills/how-to-cook/` |
 | Claude Code | `~/.claude/skills/how-to-cook/` |
 | Cursor | `~/.cursor/skills/how-to-cook/` |
+| DeepSeek Harness | `~/.dsh/skills/how-to-cook/`（项目级放 `.dsh/skills/`） |
+| Codex | `~/.codex/skills/how-to-cook/` 或项目级 `.agents/skills/` |
+| Gemini CLI | `~/.gemini/skills/how-to-cook/` |
+| Windsurf | `~/.codeium/windsurf/skills/how-to-cook/` |
 | 其他支持 SKILL.md 的 Agent | 放到它扫描技能的目录下，保持 `SKILL.md` 在 `how-to-cook/` 根层 |
 
 ```bash
-git clone https://github.com/weivslong/how-to-cook.git ~/.claude/skills/how-to-cook   # 以 Claude Code 为例
+git clone https://github.com/weivslong/how-to-cook.git ~/.dsh/skills/how-to-cook   # 以 DeepSeek Harness 为例，其他 Agent 换对应目录
 ```
 
 - **运行要求**：Agent 须能执行 bash + grep（检索和自举都靠它）；首次使用若正文缺失会自动从上游拉取（需 git + 网络），之后完全离线

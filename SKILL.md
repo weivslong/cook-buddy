@@ -16,7 +16,7 @@ agent_created: true
 
 ```bash
 # 自动定位技能目录（不同机器、不同 Agent 安装位置可能不同，不要写死路径）
-HTC="$(dirname "$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.workbuddy" -maxdepth 3 -type d -name how-to-cook 2>/dev/null | head -1)")"
+HTC="$(dirname "$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.dsh/skills" "$HOME/.agents/skills" "$HOME/.codex/skills" "$HOME/.gemini/skills" "$HOME/.workbuddy" -maxdepth 3 -type d -name how-to-cook 2>/dev/null | head -1)")"
 IDX="$HTC/references/INDEX.md"
 ```
 
