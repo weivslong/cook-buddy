@@ -79,8 +79,21 @@ def parse_recipe(path: str):
                 items.append(ing)
     ingredients = "/".join(items[:8])
 
-    return name, CATEGORY_LABEL.get(os.path.basename(os.path.dirname(path)),
-                                    os.path.basename(os.path.dirname(path))), \
+    # 分类只看 dishes/ 下面那一层目录名。
+    # 旧写法用直接父目录名，遇到 dishes/soup/陈皮排骨汤/陈皮排骨汤.md
+    # 这种「一道菜一个文件夹」的结构就会把菜名当分类（201/373 行踩过这个坑）。
+    cat_dir = ""
+    p = os.path.dirname(path)
+    while p and p != os.sep:
+        b = os.path.basename(p)
+        if b in CATEGORY_LABEL:
+            cat_dir = b
+            break
+        if b == "dishes":
+            break
+        p = os.path.dirname(p)
+
+    return name, CATEGORY_LABEL.get(cat_dir, cat_dir or "未分类"), \
         difficulty, cal, ingredients
 
 
@@ -113,6 +126,23 @@ def main() -> int:
                               strip_comments(open(full, encoding="utf-8").read()), re.M)
             tips.append((rel, title.group(1) if title else fn[:-3]))
 
+    # 按菜名+分类去重（上游存在「文件夹 + 同名旧文件」并存的情况，
+    # 如陈皮排骨汤同时有难度 3/4 两条）。保留信息更全的，丢弃的打到 stderr。
+    dedup = {}
+    for rel, name, cat, diff, cal, ing in recipes:
+        key = (name, cat)
+        if key not in dedup:
+            dedup[key] = (rel, name, cat, diff, cal, ing)
+        else:
+            old = dedup[key]
+            score = lambda r: (bool(r[4]), len(r[5] or ""), bool(r[3]))  # cal, ing, diff
+            if score(dedup[key]) < score((rel, name, cat, diff, cal, ing)):
+                sys.stderr.write("去重丢弃：%s（与 %s 同菜同名）\n" % (rel, old[0]))
+                dedup[key] = (rel, name, cat, diff, cal, ing)
+            else:
+                sys.stderr.write("去重丢弃：%s（与 %s 同菜同名）\n" % (rel, old[0]))
+    recipes = [(r, n, c, d, cal, i) for (r, n, c, d, cal, i) in dedup.values()]
+
     # 按分类归组
     groups = {}
     for rel, name, cat, diff, cal, ing in recipes:
@@ -130,9 +160,9 @@ def main() -> int:
     L.append("")
     L.append("每行格式：`菜名|分类|难度|卡路里|主要食材|正文路径`")
     L.append("")
-    L.append("- **分类**：素菜/荤菜/水产/早餐/主食/汤羹/甜品/饮料/调料/半成品，grep 时写 `|分类|`（前后带竖线防误命中）。")
+    L.append("- **分类**：素菜/荤菜/水产/早餐/主食/汤羹/甜品/饮料/调料/半成品。按分类筛请用**路径列**：`grep 'dishes/soup/'`，比 `grep '|汤羹|'` 稳。")
     L.append("- **难度**：1–5，★ 的个数。1 星最简单（约 5 分钟），5 星最难。")
-    L.append("- **卡路里**：上游给的预估总量，单位大卡；空白表示原作者未填。")
+    L.append("- **卡路里**：上游给的**整份预估总量**，单位大卡，**不是人均**；上游没给人均就不要自己折算。空白表示原作者未填。")
     L.append("- **主要食材**：取自正文「必备原料和工具」，已滤掉锅碗油盐这类厨房常备。")
     L.append("- **正文路径**：相对 `references/HowToCook/`。")
     L.append("- **用法**：grep 本文件定位，再读正文。不要整篇读本文件。")
