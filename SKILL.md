@@ -2,7 +2,7 @@
 name: cook-buddy
 display_name: 做饭搭子
 display_name_en: Cook Buddy
-version: 1.5.2
+version: 1.5.3
 author: weivslong
 description: 做饭查证与用量换算。当用户要做菜、问某道菜怎么做、该放多少盐/油/水、几个人吃该做几份、冰箱里只剩某几样食材能做什么、这道菜多少热量、或者问焯水/腌肉/蒸煮/油温/微波炉/空气炸锅/高压锅怎么用时，先到本地的《程序员做饭指南》(Anduin2017/HowToCook) 正文里把菜谱查出来，按人数把用量算好再答；严禁凭记忆编数字、严禁用"少许/适量"顶替原方。触发词：做菜、做饭、菜谱、怎么做、今天吃什么、几个人、几人份、放多少、多少克、火候、几成熟、焯水、腌肉、去腥、蒸、煮、凉拌、微波炉、空气炸锅、高压锅、低卡、简单点、快手菜、剩了点什么能做什么、食材搭配。
 description_zh: 把《程序员做饭指南》变成可查证的菜谱库——先查本地菜谱正文，按人数把用量换算好再答；忌口过敏硬过滤，严禁编数字、严禁用「少许/适量」顶替原方。
@@ -22,9 +22,11 @@ agent_created: true
 **索引**：`$HTC/references/INDEX.md` —— 每行 `菜名|分类|难度|卡路里|主要食材|合并文件`，专供 grep。别整篇读，用 grep。
 
 ```bash
-# 自动定位技能目录（不同机器、不同 Agent 安装位置可能不同，不要写死路径）；命中后验证 INDEX 真在，防止撞错目录。
-HTC="$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.dsh/skills" "$HOME/.agents/skills" "$HOME/.codex/skills" "$HOME/.gemini/skills" "$PWD/.workbuddy/skills" -maxdepth 3 -type d -name cook-buddy 2>/dev/null | while IFS= read -r d; do [ -f "$d/references/INDEX.md" ] && { echo "$d"; break; }; done)"
-[ -z "$HTC" ] && echo "没找到 cook-buddy 技能目录，请告知技能安装路径，不要瞎猜路径继续。"
+# 本技能目录（$HTC）= 本 SKILL.md 所在目录，运行时已知，直接可用。各平台命名不同：
+# 手动安装一般是 cook-buddy；SkillHub 装出来带来源后缀（cook-buddy__skillhub）——不要写死某一个名字。
+# 拿不准位置时用下面的兜底命令定位：前缀匹配 cook-buddy*，命中后验证 references/INDEX.md 真在，防止撞错目录。
+HTC="${HTC:-$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.dsh/skills" "$HOME/.agents/skills" "$HOME/.codex/skills" "$HOME/.gemini/skills" "$PWD/.workbuddy/skills" -maxdepth 3 -type d -name 'cook-buddy*' 2>/dev/null | while IFS= read -r d; do [ -f "$d/references/INDEX.md" ] && { echo "$d"; break; }; done)}"
+[ -z "$HTC" ] && echo "没定位到 cook-buddy 技能目录，请告知技能安装路径，不要瞎猜路径继续。"
 IDX="$HTC/references/INDEX.md"
 LIB="$HTC/references"
 ```
@@ -60,7 +62,7 @@ LIB="$HTC/references"
 **先自检，正文不在就自动拉取**（本技能设计为可自举：正文、索引缺失时从上游现拉，不依赖安装环境预置任何数据）：
 
 ```bash
-HTC="${HTC:-$HOME/.workbuddy/skills/cook-buddy}"
+HTC="${HTC:-$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.dsh/skills" -maxdepth 3 -type d -name 'cook-buddy*' 2>/dev/null | head -1)}"
 LIB="$HTC/references"
 ls "$LIB/INDEX.md" "$LIB/基本功.md" "$LIB/菜谱-荤菜.md" 2>/dev/null \
   || bash "$HTC/scripts/refresh.sh"   # 首次自举：稀疏克隆上游 md → 合并成分类库 + 重建索引
@@ -188,7 +190,7 @@ awk 用的是 `index()` 固定字符串匹配（不是正则），菜名带括�
 | 「一份正好够 2 个人吃」 | 份数 = 人数 ÷ 2 向上取整；3 个人就做 2 份 |
 | 「一份正好够 1-2 个人吃」「这份量两人够吃，一人吃搭饭也行」 | **摆区间 + 给候选 + 反问一句**：「上游这份够 1-2 人——1 个人吃正好，2 个人吃够吃但不算宽裕。你几个人吃？想宽裕点我按 1 份半算或配个别的菜。」用户答了照办；不答/催 → 按 1 份给并标注「想加量说一声」。3 人及以上 → 份数 = 人数 ÷ 2 向上取整，不用问 |
 | 「标准 2-3 人份」这类**标了人数区间但不是「一份正好够 N 人」句式**的 | 同上摆区间反问（例：「上游按 2-3 人份写的，你几个人吃？2 人正好、3 人够吃」）；不答/催 → 人数落在区间内 1 份照给并标注；超出区间 → 份数 = 人数 ÷ 区间上限，向上取整，并说明是按比例换算 |
-| 「每份：」「总量：」（**没写基准人数**） | 按每份给，并明确告诉用户「上游按每份写，一份大约 1-2 人，你按人数乘」——**不要自己替他假定一份够几个人** |
+| 「每份：」「总量：」（**没写基准人数**） | **不许按用户人数直接乘**——这里的「每份」可能指"一盘菜"（炒滑蛋每份 4 颗蛋，3 人乘成 12 颗就爆量、明显过多），也可能指"一人份"（葱油拌面每份 80g 面）。做法：先按 **1 份**给量 + 说一句「上游按每份写、没标够几人，一份大约 1-2 人」，再问一句要不要按人数加；**用户明确说了做几份/几人份，才照他说的乘** |
 | 「按照 1 人的份量：」「1 人食用版本」「下述材料为一人份」 | 份数 = 人数，直接乘 |
 | 条目里写 `青菜 100g * 份数` | 把「份数」换成算出来的整数 |
 | 整段死数，既无「份数」也无基准人数（麻婆豆腐、可乐鸡翅这类） | **用户没报人数**：告诉用户上游按一份写死、没标够几人；问他打算做几份，按份数乘；不替他假定。**用户已报人数**：给 1 份的量 + 标一句「上游按一份写死、没标够几人，一般够 1-2 人（常识）」+ 反问要不要加量——**不许自己拿人数去乘死数** |
