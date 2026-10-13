@@ -39,7 +39,7 @@
 任何能跑 shell 命令的 AI Agent（Claude Code、Cursor、WorkBuddy、DeepSeek Harness 等）都能装，一条命令：
 
 ```bash
-git clone https://github.com/weivslong/how-to-cook.git ~/.claude/skills/cook-buddy
+git clone https://github.com/weivslong/cook-buddy.git ~/.claude/skills/cook-buddy
 # 其他 Agent 换对应目录，见下表
 ```
 
