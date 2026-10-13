@@ -17,9 +17,9 @@
 
 问：「**西红柿炒鸡蛋，3 个人吃**」
 
-> 西红柿炒鸡蛋 · ★★ · 约 15 分钟 · 每人份约 252 大卡
+> 西红柿炒鸡蛋 · ★★ · 约 15 分钟 · 整份约 252 大卡（上游总量）
 >
-> **用料**（已按 3 人份算好）：西红柿 3 个（约 540g）｜鸡蛋 4.5 个｜食用油 18ml｜盐 4.5–6g（其中 3g 打进蛋液）｜糖 0–6g 可选
+> **用料**（已按 3 人份算好）：西红柿 3 个（约 540g）｜鸡蛋 4.5 个｜食用油 20ml｜盐 4.5–6g（其中 3g 打进蛋液）｜糖 0–6g 可选
 >
 > 1. 西红柿洗净去皮，切 **4cm 以内**的块
 > 2. 鸡蛋 4.5 个加 **3g 盐**、可选 **1ml 醋**打匀
@@ -81,11 +81,13 @@ git clone https://github.com/weivslong/cook-buddy.git ~/.claude/skills/cook-budd
 ## 结构与维护
 
 ```
-SKILL.md                  # 技能定义：检索流程、换算规则、输出规范
-references/HowToCook/     # 上游菜谱正文（只含 .md）
-references/INDEX.md       # 菜名|分类|难度|卡路里|食材|路径 索引
-scripts/build_index.py    # 重建索引
-scripts/refresh.sh        # 从上游拉最新版 / 首次自举
+SKILL.md                    # 技能定义：检索流程、换算规则、输出规范
+references/菜谱-*.md        # 372 道菜正文，按 10 个分类合并（锚点定位单菜）
+references/基本功.md        # 18 篇技巧正文
+references/INDEX.md         # 菜名|分类|难度|卡路里|主要食材|合并文件 索引
+scripts/merge_library.py    # 上游原文 → 分类合并 + 建索引
+scripts/build_index.py      # 从合并库重建/校验索引
+scripts/refresh.sh          # 从上游拉最新版 / 首次自举
 ```
 
 - **日常查询零联网**（正文内置）；正文缺失时自动从上游拉取自举（需 git + 网络）
