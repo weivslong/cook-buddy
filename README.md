@@ -1,4 +1,4 @@
-# how-to-cook · 做饭查证技能
+# cook-buddy · 做饭搭子
 
 [![License](https://img.shields.io/badge/license-Unlicense-blue)](./LICENSE)
 [![Upstream](https://img.shields.io/badge/基于-HowToCook_77k★-orange)](https://github.com/Anduin2017/HowToCook)
@@ -39,19 +39,19 @@
 任何能跑 shell 命令的 AI Agent（Claude Code、Cursor、WorkBuddy、DeepSeek Harness 等）都能装，一条命令：
 
 ```bash
-git clone https://github.com/weivslong/how-to-cook.git ~/.claude/skills/how-to-cook
+git clone https://github.com/weivslong/how-to-cook.git ~/.claude/skills/cook-buddy
 # 其他 Agent 换对应目录，见下表
 ```
 
 | Agent | 技能目录 |
 |---|---|
-| Claude Code | `~/.claude/skills/how-to-cook/` |
-| Cursor | `~/.cursor/skills/how-to-cook/` |
-| WorkBuddy | `~/.workbuddy/skills/how-to-cook/`（或在技能页导入 zip） |
-| CodeBuddy | `~/.codebuddy/skills/how-to-cook/` |
-| DeepSeek Harness | `~/.dsh/skills/how-to-cook/` |
-| Codex | `~/.codex/skills/how-to-cook/` |
-| Gemini CLI | `~/.gemini/skills/how-to-cook/` |
+| Claude Code | `~/.claude/skills/cook-buddy/` |
+| Cursor | `~/.cursor/skills/cook-buddy/` |
+| WorkBuddy | `~/.workbuddy/skills/cook-buddy/`（或在技能页导入 zip） |
+| CodeBuddy | `~/.codebuddy/skills/cook-buddy/` |
+| DeepSeek Harness | `~/.dsh/skills/cook-buddy/` |
+| Codex | `~/.codex/skills/cook-buddy/` |
+| Gemini CLI | `~/.gemini/skills/cook-buddy/` |
 | 其他支持 SKILL.md 的 Agent | 放到它扫描技能的目录，保持 `SKILL.md` 在根层 |
 
 装完问一句「西红柿炒鸡蛋 2 人份怎么做」——能答出精确克数就是装好了。

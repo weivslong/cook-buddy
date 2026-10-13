@@ -1,6 +1,6 @@
 ---
-name: how-to-cook-guide
-version: 1.4.4
+name: cook-buddy
+version: 1.5.0
 author: weivslong
 description: 做饭查证与用量换算。当用户要做菜、问某道菜怎么做、该放多少盐/油/水、几个人吃该做几份、冰箱里只剩某几样食材能做什么、这道菜多少热量、或者问焯水/腌肉/蒸煮/油温/微波炉/空气炸锅/高压锅怎么用时，先到本地的《程序员做饭指南》(Anduin2017/HowToCook) 正文里把菜谱查出来，按人数把用量算好再答；严禁凭记忆编数字、严禁用"少许/适量"顶替原方。触发词：做菜、做饭、菜谱、怎么做、今天吃什么、几个人、几人份、放多少、多少克、火候、几成熟、焯水、腌肉、去腥、蒸、煮、凉拌、微波炉、空气炸锅、高压锅、低卡、简单点、快手菜、剩了点什么能做什么、食材搭配。
 description_zh: 把《程序员做饭指南》变成可查证的菜谱库——先查本地菜谱正文，按人数把用量换算好再答；忌口过敏硬过滤，严禁编数字、严禁用「少许/适量」顶替原方。
@@ -20,8 +20,10 @@ agent_created: true
 **索引**：`$HTC/references/INDEX.md` —— 每行 `菜名|分类|难度|卡路里|主要食材|合并文件`，专供 grep。别整篇读，用 grep。
 
 ```bash
-# 自动定位技能目录（不同机器、不同 Agent 安装位置可能不同，不要写死路径）
-HTC="$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.dsh/skills" "$HOME/.agents/skills" "$HOME/.codex/skills" "$HOME/.gemini/skills" "$HOME/.workbuddy" -maxdepth 3 -type d -name how-to-cook 2>/dev/null | head -1)"
+# 自动定位技能目录（不同机器、不同 Agent 安装位置可能不同，不要写死路径）。
+# 匹配 cook-buddy（当前名）或旧名 how-to-cook*；命中后必须验证 INDEX 真在才算数，防止撞错目录。
+HTC="$(find "$HOME/.workbuddy/skills" "$HOME/.codebuddy/skills" "$HOME/.claude/skills" "$HOME/.cursor/skills" "$HOME/.dsh/skills" "$HOME/.agents/skills" "$HOME/.codex/skills" "$HOME/.gemini/skills" "$PWD/.workbuddy/skills" -maxdepth 3 -type d \( -name cook-buddy -o -name 'how-to-cook*' \) 2>/dev/null | while IFS= read -r d; do [ -f "$d/references/INDEX.md" ] && echo "$d" && break; done)"
+[ -z "$HTC" ] && echo "没找到菜谱库目录（cook-buddy / how-to-cook*），请告知技能安装路径，不要瞎猜路径继续。"
 IDX="$HTC/references/INDEX.md"
 LIB="$HTC/references"
 ```
@@ -57,7 +59,7 @@ LIB="$HTC/references"
 **先自检，正文不在就自动拉取**（本技能设计为可自举：正文、索引缺失时从上游现拉，不依赖安装环境预置任何数据）：
 
 ```bash
-HTC="${HTC:-$HOME/.workbuddy/skills/how-to-cook}"
+HTC="${HTC:-$HOME/.workbuddy/skills/cook-buddy}"
 LIB="$HTC/references"
 ls "$LIB/INDEX.md" "$LIB/基本功.md" "$LIB/菜谱-荤菜.md" 2>/dev/null \
   || bash "$HTC/scripts/refresh.sh"   # 首次自举：稀疏克隆上游 md → 合并成分类库 + 重建索引
@@ -299,4 +301,4 @@ references/菜谱-素菜.md 中的「西红柿炒鸡蛋」（上游 Anduin2017/H
 
 - 只讲做饭。不替代医生、营养师；不给治病、减肥、增肌的处方。
 - 上游是网友合写的，可能有错。用户说「照做失败」，先从「附加内容」和 `tips/` 找原因；找不到就直说「这条上游没写，我不知道」，别硬解释机制。
-- 上游菜谱放弃版权（见技能根目录 `LICENSE`），可自由使用；引用时说一句来自《程序员做饭指南》即可。
+- 上游菜谱放弃版权（Unlicense，以上游仓库声明为准），可自由使用；引用时说一句来自《程序员做饭指南》即可。
