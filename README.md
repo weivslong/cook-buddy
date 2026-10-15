@@ -1,6 +1,6 @@
 # cook-buddy · 做饭搭子
 
-[![License](https://img.shields.io/badge/license-Unlicense-blue)](./LICENSE)
+[![License](https://img.shields.io/badge/license-Unlicense-blue)](./LICENSE.txt)
 [![Upstream](https://img.shields.io/badge/基于-HowToCook_77k★-orange)](https://github.com/Anduin2017/HowToCook)
 [![菜谱](https://img.shields.io/badge/菜谱-372道-green)](#能力总览)
 [![格式](https://img.shields.io/badge/格式-SKILL.md_通用标准-8A2BE2)](https://agentskills.io)
